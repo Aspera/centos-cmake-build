@@ -3,11 +3,7 @@ FROM centos:centos7
 RUN yum update -y
 
 RUN yum install -y \
-    gperf \
     golang \
-    ruby \
-    libuuid-devel \
-    libxml2-devel \
     wget \
     which
 
@@ -25,8 +21,8 @@ RUN ln -s /usr/bin/pydoc3.6 /usr/bin/pydoc3 && \
 # CMake
 RUN mkdir -p /tmp/cmake && \
     pushd /tmp/cmake && \
-    wget 'https://cmake.org/files/v3.9/cmake-3.9.1-Linux-x86_64.sh' && \
-    bash cmake-3.9.1-Linux-x86_64.sh --prefix=/usr/local --exclude-subdir && \
+    wget 'https://cmake.org/files/v3.12/cmake-3.12.1-Linux-x86_64.sh' && \
+    bash cmake-3.12.1-Linux-x86_64.sh --prefix=/usr/local --exclude-subdir && \
     popd && \
     rm -rf /tmp/cmake
 
