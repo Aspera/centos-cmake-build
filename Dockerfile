@@ -5,7 +5,8 @@ RUN yum update -y
 RUN yum install -y \
     golang \
     wget \
-    which
+    which \
+    dpkg
 
 # Python 3
 RUN yum -y install yum-utils
