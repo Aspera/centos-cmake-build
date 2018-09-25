@@ -1,43 +1,33 @@
-FROM centos:centos7
+FROM centos/devtoolset-7-toolchain-centos7
+FROM centos/python-35-centos7
+MAINTAINER Guillaume Egles <gegles@us.ibm.com>
 
-RUN yum update -y
+ENV CMAKE_VERSION_MAJOR "3"
+ENV CMAKE_VERSION_MINOR "12"
+ENV CMAKE_VERSION_PATCH "2"
 
-RUN yum install -y \
-    golang \
-    wget \
-    which \
-    dpkg
-
-# Python 3
-RUN yum -y install yum-utils
-RUN yum -y groupinstall development
-RUN yum -y install 'https://centos7.iuscommunity.org/ius-release.rpm'
-RUN yum -y install \
-    python36u \
-    python36u-pip \
-    python36u-devel
-RUN ln -s /usr/bin/pydoc3.6 /usr/bin/pydoc3 && \
-    ln -s /usr/bin/python3.6 /usr/bin/python3
+USER root
+RUN yum -y update \
+	&& yum -y install epel-release \
+	&& yum -y install yum-utils \
+ 	&& yum -y install wget golang dpkg \
+ 	&& yum clean all \
+ 	&& rm -rf /var/cache/yum
 
 # CMake
 RUN mkdir -p /tmp/cmake && \
     pushd /tmp/cmake && \
-    wget 'https://cmake.org/files/v3.12/cmake-3.12.1-Linux-x86_64.sh' && \
-    bash cmake-3.12.1-Linux-x86_64.sh --prefix=/usr/local --exclude-subdir && \
+    wget https://cmake.org/files/v${CMAKE_VERSION_MAJOR}.${CMAKE_VERSION_MINOR}/cmake-${CMAKE_VERSION_MAJOR}.${CMAKE_VERSION_MINOR}.${CMAKE_VERSION_PATCH}-Linux-x86_64.sh && \
+    bash cmake-${CMAKE_VERSION_MAJOR}.${CMAKE_VERSION_MINOR}.${CMAKE_VERSION_PATCH}-Linux-x86_64.sh --prefix=/usr/local --exclude-subdir && \
     popd && \
     rm -rf /tmp/cmake
 
-# GCC
-RUN yum install -y \
-    centos-release-scl
-RUN yum install -y \
-    devtoolset-7-gcc*
-ENV PATH="/opt/rh/devtoolset-7/root/usr/bin:$PATH"
-RUN source scl_source enable devtoolset-7
-
-RUN yum clean all
-
 # Build directory
-RUN mkdir -p /src
-WORKDIR /src
+RUN mkdir -p /fasp.io
+
+USER default
+WORKDIR /fasp.io
+
+
+
 
